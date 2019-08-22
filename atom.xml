@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>The-plenet</title>
+  
+  
+  <link href="/atom.xml" rel="self"/>
+  
+  <link href="http://yoursite.com/"/>
+  <updated>2019-08-22T01:53:43.085Z</updated>
+  <id>http://yoursite.com/</id>
+  
+  <author>
+    <name>KoalaQ</name>
+    
+  </author>
+  
+  <generator uri="http://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>prisma使用笔记</title>
+    <link href="http://yoursite.com/2019/08/22/prisma%E4%BD%BF%E7%94%A8%E7%AC%94%E8%AE%B0/"/>
+    <id>http://yoursite.com/2019/08/22/prisma使用笔记/</id>
+    <published>2019-08-22T01:52:40.736Z</published>
+    <updated>2019-08-22T01:53:43.085Z</updated>
+    
+    <content type="html"><![CDATA[<h1 id="prisma使用笔记"><a href="#prisma使用笔记" class="headerlink" title="prisma使用笔记"></a>prisma使用笔记</h1><ul><li><p>npm install prisma  (可以更换淘宝源也可以，npm install -g cnpm –registry=https:``//registry.npm.taobao.org）</p></li><li><p>touch docker-compose.yml   创建docker拉去镜像的文件，</p><ul><li><p><strong>使用 Docker Compose 可以轻松、高效的管理容器，它是一个用于定义和运行多容器 Docker 的应用程序工具</strong></p></li><li><p><a href="https://docs.docker.com/compose/" target="_blank" rel="noopener">官方文档</a></p><ul><li><p>安装，</p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo curl -L https://github.com/docker/compose/releases/download/1.21.2/docker-compose-$(uname -s)-$(uname -m) -o /usr/local/bin/docker-compose</span><br><span class="line">sudo chmod +x /usr/local/bin/docker-compose</span><br></pre></td></tr></table></figure></li><li><p><a href="https://www.jianshu.com/p/658911a8cff3" target="_blank" rel="noopener">简介以及安装参考</a></p></li><li><p>在docker-compose.yml里复制黏贴<a href="https://www.prisma.io/docs/1.34/get-started/01-setting-up-prisma-new-database-TYPESCRIPT-t002/" target="_blank" rel="noopener">官网的例子</a></p></li><li><p>docker-compose.yml<a href="https://www.jianshu.com/p/2217cfed29d7" target="_blank" rel="noopener">配置文件各个字段详解</a></p></li></ul></li></ul></li><li><p>docker-compose up -d ,拉取镜像获取prisma和postgreSQL镜像和容器</p></li><li><p>prisma init –endpoint <a href="http://localhost:4466" target="_blank" rel="noopener">http://localhost:4466</a> 创建两个文件</p><ul><li>这行命令会生成两个文件，datamodel.prisma和prisma.yml，前者是数据库数据格式的基础（规定字段）后者是prismaAPI的基础，比如endpoint就是指定prisma容器的ip地址以及端口。</li></ul></li><li><p>prisma deploy</p><ul><li>把datamodel初始化。生成API服务 ，此时可以打开localhost：4466_admin查看。prisma服务已启动。</li></ul></li><li><p>prisma generate </p><ul><li><p>生成prisma客户端。在prisma.yml后添加</p></li><li><p>生成的客户端要想使用，*<em>必须在client文件夹目录下（即，generated所在目录）yarn add prisma-client-lib *</em></p><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">generate： </span><br><span class="line">  generator： typescript-client</span><br><span class="line">  output： ./generated/prisma-client</span><br></pre></td></tr></table></figure></li></ul><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line"></span><br><span class="line">表示生成typescript类型的客户端并保存在本地generated目录下 ，可以把generator后边换成javascript-client或者go-client</span><br><span class="line"></span><br><span class="line">  - prisma客户端可以看做mongoose，负责连接数据库。支持js，go等。实则连接prisma服务器，把对ORM操作转换成graphQL语句或者RESTfulAPI语句。从而对数据库进行CURD（增删查改）</span><br><span class="line"></span><br><span class="line">- 具体使用见[官网](https://www.prisma.io/docs/prisma-client/)</span><br></pre></td></tr></table></figure></li></ul><p>ps： 注意docker安装与docker-compose安装。</p><ul><li>实时订阅代码示例</li></ul><figure class="highlight plain"><figcaption><span>userIterator: AsyncIterator<user> </user></span></figcaption><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">const newPostIterator = await prisma.$subscribe</span><br><span class="line">  .post(&#123;</span><br><span class="line">    mutation_in: [&quot;CREATED&quot;],</span><br><span class="line">    node: &#123;</span><br><span class="line">      OR: [&#123; title_contains: &quot;GraphQL&quot; &#125;, &#123; title_contains: &quot;REST&quot; &#125;]</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;)</span><br><span class="line">  .node();</span><br><span class="line"></span><br><span class="line">// Endless loop waiting for write-events</span><br><span class="line">while (true) &#123;</span><br><span class="line">  const result = await newPostIterator.next();</span><br><span class="line">  console.log(result)</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure><ul><li>next（）函数即为收到消息后的回调函数，在graphql服务器里，订阅类型的http请求会有一个reselove解析函数，负责把消息传回前端。详情见官方demo以及官方文档。<ul><li>个人理解，在执行weile代码块的代码时，因为next（）函数是一个promise对象，他的状态一直时pending，所以一直在等待await的执行，在得到消息后，next（）函数一瞬间变成resolve，但是又马上恢复成pending。所以打印出result以及实现一直订阅。</li></ul></li></ul><h6 id="其他"><a href="#其他" class="headerlink" title="其他"></a>其他</h6><ul><li>prisma Seed 在prisma.yml里面加上：seed： run : node ./seed.js可以初始数据。<ul><li>prisma seed（种子服务） ， prisma seed –reset (删除所有数据进行种子服务)</li></ul></li></ul><p>7.19</p><ul><li>INLINE表示外键关系，TABLE表示专用关系</li><li>A表中的一个字段，是B表的主键，那他就可以是A表的外键</li></ul><h6 id="7-21"><a href="#7-21" class="headerlink" title="7.21"></a>7.21</h6><ul><li>skip分页，last后十条</li></ul>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;h1 id=&quot;prisma使用笔记&quot;&gt;&lt;a href=&quot;#prisma使用笔记&quot; class=&quot;headerlink&quot; title=&quot;prisma使用笔记&quot;&gt;&lt;/a&gt;prisma使用笔记&lt;/h1&gt;&lt;ul&gt;
+&lt;li&gt;&lt;p&gt;npm install prisma  (可以更换淘宝源也
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+  <entry>
+    <title>Hello World</title>
+    <link href="http://yoursite.com/2019/08/21/hello-world/"/>
+    <id>http://yoursite.com/2019/08/21/hello-world/</id>
+    <published>2019-08-21T12:21:55.108Z</published>
+    <updated>2019-08-21T12:21:55.109Z</updated>
+    
+    <content type="html"><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p><h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p><h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p><h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p><h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure><p>More info: <a href="https://hexo.io/docs/deployment.html" target="_blank" rel="noopener">Deployment</a></p>]]></content>
+    
+    <summary type="html">
+    
+      
+      
+        &lt;p&gt;Welcome to &lt;a href=&quot;https://hexo.io/&quot; target=&quot;_blank&quot; rel=&quot;noopener&quot;&gt;Hexo&lt;/a&gt;! This is your very first post. Check &lt;a href=&quot;https://hexo.
+      
+    
+    </summary>
+    
+    
+  </entry>
+  
+</feed>
